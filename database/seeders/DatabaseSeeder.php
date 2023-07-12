@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
+        \App\Models\Invoice::factory(25)->create();
+
         $this->call([
             CustomerSeeder::class
         ]);
