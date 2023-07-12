@@ -15,17 +15,16 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-
+        // \App\Models\Customer::factory(10)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
 
-        \App\Models\Invoice::factory(25)->create();
-
         $this->call([
-            CustomerSeeder::class
+            CustomerSeeder::class,
+            // InvoiceSeeder::class
         ]);
     }
 }
