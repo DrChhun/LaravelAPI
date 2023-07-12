@@ -1,21 +1,42 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Invoice;
 use App\Http\Resources\V1\InvoiceResource;
 use App\Http\Resources\V1\InvoiceCollection;
+use App\Filters\V1\CustomersFilter;
+use App\Http\Resources\V1\CustomerCollection;
 
 class InvoiceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return new InvoiceCollection(Invoice::paginate(10));
+        $filter = new CustomersFilter();
+        $queryItems = $filter->transform($request);
+
+        $includeCustomers = $request->query('includeCustomers');
+
+        $invoices = Invoice::where($queryItems);
+
+        if ($includeCustomers) {
+            $invoices = $invoices->with('customer');
+        }
+
+        return new InvoiceCollection($invoices->paginate());
+
+        // if(count($queryItems) == 0) {
+        //     return new CustomerCollection(Invoice::paginate());
+        // } else {
+        //     $invoices = Invoice::where($queryItems)->paginate();
+        //     return new CustomerCollection($invoices->appends($request->query()));
+        // }
     }
 
     /**
@@ -37,8 +58,14 @@ class InvoiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Invoice $invoice)
+    public function show(Invoice $invoice, Request $request)
     {
+        $includeCustomers = $request->query('includeCustomers');
+
+        if ($includeCustomers) {
+            return new InvoiceResource($invoice->loadMissing('customer'));
+        }
+
         return new InvoiceResource($invoice);
     }
 
