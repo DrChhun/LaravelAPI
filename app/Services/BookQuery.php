@@ -25,7 +25,8 @@ class BookQuery {
     public function transform(Request $request) {
         $eloQuery = []; //array to pass into eloquent
 
-        foreach($this->safeParams as $params => $operators) {
+        foreach($this->safeParams as $params => $operators) { //loop all data in safeParams array value
+            // dd($params);
             $query = $request->query($params);
 
             if (!isset($query)) { //check query variable
@@ -35,6 +36,7 @@ class BookQuery {
             $column = $this->columnMap[$params] ?? $params;
 
             foreach($operators as $operator) {
+                // dd($operator);
                 if (isset($query[$operator])) { //chech if query isn't null
                     $eloQuery[] = [$column, $this->operatorMap[$operator], $query[$operator]];
                 }
