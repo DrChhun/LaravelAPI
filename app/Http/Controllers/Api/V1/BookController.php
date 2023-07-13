@@ -18,14 +18,13 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {   
-        $filter = new BookQuery();
+        $filter = new BookQuery(); //create new BookQuery function
         $queryItems = $filter->transform($request);
 
-        if (count($queryItems) == 0) {
-            return new BookCollection(Book::paginate());
-        }
         //control on url req parameter
         //check if url has or not has parameter, if has return something and isn't has return something
+        count($queryItems) == 0 && new BookCollection(Book::paginate());
+
         return new BookCollection(Book::where($queryItems)->paginate());
     }
 
